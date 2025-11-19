@@ -18,16 +18,24 @@ public
     }
 
     public static int colorToByte(Color color){
-        int r = (color.getRed() * 7 / 255) & 0x7;
-        int g = (color.getGreen() * 7 / 255) & 0x7;
-        int b = (color.getBlue() * 3 / 255) & 0x3;
+        int r = color.getRed() >> 5;
+        int g = color.getGreen() >> 5;
+        int b = color.getBlue() >> 6;
         return (r << 5) | (g << 2) | b;
     }
 
     public static Color byteToColor(int value) {
-        int r = ((value >> 5) & 0x7) * 255 / 7;
-        int g = ((value >> 2) & 0x7) * 255 / 7;
-        int b = (value & 0x3) * 255 / 3;
+        int r = (value >> 5) & 0x7;
+        int g = (value >> 2) & 0x7;
+        int b = value & 0x3;
+        
+        // Expand 3-bit values (r, g) to 8 bits by bit replication
+        r = (r << 5) | (r << 2) | (r >> 1);
+        g = (g << 5) | (g << 2) | (g >> 1);
+        
+        // Expand 2-bit value (b) to 8 bits by bit replication
+        b = (b << 6) | (b << 4) | (b << 2) | b;
+        
         return new Color(r, g, b);
     }
 }
